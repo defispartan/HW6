@@ -23,28 +23,24 @@ for i in range(n):
 # Whereas a skill that accounts for 7/10 of all skills gets a measly 10/7 as its score 
 total_skills = sum(counter.values())
 inverse_relative_frequencies = dict((i, total_skills/counter[i]) for i in counter.keys())
-
 def assign_score(skill_list):
-    # Assigns a high score to skill lists with lots of rare skills
+    """
+    Assigns a 'contribution score' to lists with lots of rare skills
+    """
     return sum(inverse_relative_frequencies[i] for i in skill_list)
 
-# Now construct a sorted list of people by scores
-importance_list = sorted([(i, assign_score(people[i])) for i in range(n)], key = lambda x: x[1])
-
-skills_already = set()
-people_included = []
-
-# Iterate
+skills_already = set()  # The skills currently included in our solution
+people_included = []  # The list of people currently included in our solution 
 while skills_already != skills_needed:
     # print("ALREADY GOT: ", skills_already)
-    i = importance_list.pop()[0]  # Get the person with the highest score 
+    most_important = max((i for i in range(n)), key = lambda x: assign_score(people[x]))  # The person with the highest contribution score
     # print("POPPED PERSON ", i, " WITH SKILLS ", people[i])
-    people_included.append(i)  # Add him to the list of people we have 
-    skills_already.update(people[i])  # Add the skills he brings 
+    people_included.append(most_important)  # Include him
+    skills_already.update(people[most_important])  # Add his skills
+    for skill in people[most_important]:
+        inverse_relative_frequencies[skill] = 0  # Make the skills he added worthless 
     
-# POTENTIAL IMPROVEMENTS: 
-# Try iteratively updating scores as we include- ie, once we include someone, recompute everyone's scores
-# and figure out a way to reduce the scores of people who have a lot of skills included 
+# Print the final answer
 print(len(people_included))
 for person in people_included:
     print(person, end = ' ')
