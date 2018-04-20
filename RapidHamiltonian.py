@@ -1,4 +1,4 @@
-ef test_cycle(path):
+def test_cycle(path):
     # Check that our path is hamiltonian 
     if set(path) != vertex_set:
         # print("NOT EVERYTHING")
