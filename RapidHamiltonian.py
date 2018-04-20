@@ -1,57 +1,45 @@
-def test_cycle(edges, path):
-    iter = 0
-    last = None
-    while iter + 1 < len(path):
-        tup = (int(path[iter]),int(path[iter + 1]))
-        if last != None:
-            reversed = (last[1], last[0])
-            if tup == last or tup == reversed:
-                return "NO"
-        last = tuple(tup)
-        found = False
-        for edge in edges:
-            if tup == edge:
-                found = True
-                break
-            reversed_tup = (tup[1], tup[0])
-            if reversed_tup == edge:
-                found = True
-                break
-        if found == False:
-            return "NO"
-
-        iter += 1
-
-    first = int(path[0])
-    last_place = int(path[len(path)-1])
-    tup = (first, last_place)
-    if tup not in edges:
-        reverse_tup = (tup[1], tup[0])
-        if reverse_tup not in edges:
-            return "NO"
-    reversed = (last[1], last[0])
-    if tup == last or tup == reversed:
-        return "NO"
-    return "YES"
+ef test_cycle(path):
+    # Check that our path is hamiltonian 
+    if set(path) != vertex_set:
+        # print("NOT EVERYTHING")
+        # print(set(path))
+        # print(vertex_set)
+        print("NO")
+        return 
+    # Check that every edge actually exists 
+    for i in range(len(path) - 1):
+        if not (path[i], path[i + 1]) in edges:
+            # print("EDGE: ", path[i], " to ", path[i + 1], " does not exist")
+            print("NO")
+            return
+    # Check that it is a cycle
+    if not (path[-1], path[0]) in edges:
+        # print("NOT A CYCLE")
+        print("NO")
+        return
+    # If it satisfies all these, it must be a hamiltonian cycle
+    print("YES")
 
 
+# Get params 
 line = input()
 line = line.split(" ")
 n = int(line[0])
 m = int(line[1])
 
-edges = []
+vertex_set = set((i for i in range(n)))
+
+# Construct edge dictionary 
+edges = set()
 for i in range(m):
     line = input()
-    line = line.split(" ")
-    a = int(line[0])
-    b = int(line[1])
-    edges.append((a,b))
-    i += 1
+    line = [int(i) for i in line.split()]
+    # Undirected graph assumption
+    edges.add((line[0], line[1]))
+    edges.add((line[1], line[0]))
 
 t = int(input())
 for j in range(t):
     line = input()
-    line = line.split(" ")
-    result = test_cycle(edges,line)
-    print(result)
+    line = [int(j) for j in line.split()]
+    test_cycle(line)
